@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "flutter-training",
+            "request": "launch",
+            "flutterMode": "debug",
+            "deviceId": "0C8CED2F-F9EF-496C-AB41-BFAA6ACE0D3B",
+            "cwd": "${workspaceFolder}",
+            "type": "dart",
+            "preLaunchTask": "start-ios-simulator"
+        },
+        {
+            "name": "flutter-training (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "flutter-training (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

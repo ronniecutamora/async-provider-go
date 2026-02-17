@@ -1,5 +1,4 @@
-// Screens and Widgets
-import 'package:async_provider_go/src/posts/data/posts.model.dart';
+import 'package:async_provider_go/features/posts/domain/models/post.model.dart';
 import 'package:flutter/material.dart';
 
 class PostCard extends StatelessWidget {

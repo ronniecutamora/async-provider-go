@@ -1,7 +1,5 @@
-// Posts loading indicators
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-
 class PostShimmerList extends StatelessWidget {
   const PostShimmerList({super.key});
 

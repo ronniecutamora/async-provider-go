@@ -1,8 +1,8 @@
-import 'package:async_provider_go/src/posts/presentation/posts.provider.dart';
-import 'package:async_provider_go/src/posts/presentation/widgets/post_card.dart';
-import 'package:async_provider_go/src/posts/presentation/widgets/post_shimmer.dart';
+import 'package:async_provider_go/features/posts/presentation/widgets/post_card.widget.dart';
+import 'package:async_provider_go/features/posts/presentation/widgets/post_shimmer.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../providers/post.provider.dart';
 
 class PostScreen extends StatelessWidget {
   const PostScreen({super.key});
@@ -16,19 +16,16 @@ class PostScreen extends StatelessWidget {
       body: RefreshIndicator(
         onRefresh: () => context.read<PostProvider>().loadPosts(),
         child: switch (state) {
-          // posts initial state
           PostInitial() => ListView(
               physics: const AlwaysScrollableScrollPhysics(),
               children: [
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.7, // Centers the text visually
+                  height: MediaQuery.of(context).size.height * 0.7,
                   child: const Center(child: Text("Pull down to load posts")),
                 ),
               ],
             ),
-          // posts loading
           PostLoading() => const PostShimmerList(), 
-          // posts error
           PostError(message: var m) => ListView(
               physics: const AlwaysScrollableScrollPhysics(),
               children: [
@@ -38,14 +35,10 @@ class PostScreen extends StatelessWidget {
                 ),
               ],
             ),
-          // posts loaded
           PostLoaded(posts: var list) => ListView.builder(
               physics: const AlwaysScrollableScrollPhysics(), 
               itemCount: list.length,
-              itemBuilder: (context, index) {
-                final post = list[index];
-                return PostCard(post: post); 
-              },
+              itemBuilder: (context, index) => PostCard(post: list[index]),
             ),
         },
       ),

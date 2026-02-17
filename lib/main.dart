@@ -1,16 +1,14 @@
-import 'package:async_provider_go/src/posts/data/posts.service.dart';
-import 'package:async_provider_go/src/posts/presentation/posts.provider.dart';
-import 'package:async_provider_go/src/posts/presentation/posts.screen.dart';
+import 'package:async_provider_go/features/posts/data/data_sources/post.service.dart';
+import 'package:async_provider_go/features/posts/data/repositories/post.repository.dart';
+import 'package:async_provider_go/features/posts/domain/repositories/post.repository.dart';
+import 'package:async_provider_go/features/posts/presentation/screens/post.screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'features/posts/presentation/providers/post.provider.dart';
+
 
 void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => PostProvider(PostService()),
-      child: const MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -18,9 +16,27 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: PostScreen()
+    return MultiProvider(
+      providers: [
+        // 1. Data Source
+        Provider(create: (_) => PostService()),
+        
+        // 2. Repository (Inject Data Source into Implementation)
+        ProxyProvider<PostService, PostRepository>(
+          update: (_, service, __) => PostRepositoryImpl(service),
+        ),
+        
+        // 3. Provider (Inject Repository Interface)
+        ChangeNotifierProxyProvider<PostRepository, PostProvider>(
+          create: (context) => PostProvider(context.read<PostRepository>()),
+          update: (_, repo, previous) => previous ?? PostProvider(repo),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Production Pattern',
+        theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+        home: const PostScreen(),
+      ),
     );
   }
 }
-
