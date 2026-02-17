@@ -6,7 +6,8 @@ class PostShimmerList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: 6, // Show 6 skeleton items while loading
+      //TODO: pass the actual list length here
+      itemCount: 10, // Show 6 skeleton items while loading
       itemBuilder: (context, index) => const PostShimmerItem(),
     );
   }
