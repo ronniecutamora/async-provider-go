@@ -3,7 +3,7 @@ import 'package:async_provider_go/features/posts/domain/models/post.model.dart';
 
 class PostService {
   Future<List<Post>> fetchPosts() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
     return [
       Post(id: 1, title: "Building Scalable Flutter Apps", userId: 10),
       Post(id: 2, title: "The Power of Sealed Classes", userId: 10),
