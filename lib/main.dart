@@ -1,3 +1,4 @@
+import 'package:async_provider_go/core/constants/app_constants.dart';
 import 'package:async_provider_go/core/router/app_router.dart';
 import 'package:async_provider_go/core/theme/app_theme.dart';
 import 'package:async_provider_go/core/theme/theme.provider.dart';
@@ -6,11 +7,22 @@ import 'package:async_provider_go/features/posts/data/repositories/post.reposito
 import 'package:async_provider_go/features/posts/domain/repositories/post.repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'features/posts/presentation/providers/post.provider.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized(); // add this
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Validate compile-time env vars before anything else runs.
+  AppConstants.validate();
+
+  // Initialise Supabase — must complete before runApp.
+  await Supabase.initialize(
+    url: AppConstants.supabaseUrl,
+    anonKey: AppConstants.supabaseAnonKey,
+  );
+
   runApp(const MyApp());
 }
 
@@ -23,6 +35,11 @@ class MyApp extends StatelessWidget {
       providers: [
         // Theme
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+
+        // Supabase client — injected into services that need it (Phase 6+)
+        Provider<SupabaseClient>(
+          create: (_) => Supabase.instance.client,
+        ),
 
         // 1. Data Source
         Provider(create: (_) => PostService()),
