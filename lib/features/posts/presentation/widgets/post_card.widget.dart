@@ -1,10 +1,12 @@
+import 'package:async_provider_go/core/router/app_routes.dart';
 import 'package:async_provider_go/features/posts/domain/models/post.model.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class PostCard extends StatelessWidget {
-  final Post post;
-
   const PostCard({super.key, required this.post});
+
+  final Post post;
 
   @override
   Widget build(BuildContext context) {
@@ -13,20 +15,20 @@ class PostCard extends StatelessWidget {
       elevation: 0.5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
       child: InkWell(
-        onTap: () {
-          // Handle navigation or selection here
-          debugPrint('Tapped on: ${post.title}');
-        },
+        onTap: () => context.goNamed(
+          AppRouteNames.postDetail,
+          pathParameters: {'id': '${post.id}'},
+        ),
         borderRadius: BorderRadius.circular(8.0),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // User Avatar (Matches Shimmer box)
               CircleAvatar(
                 radius: 24,
-                backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+                backgroundColor:
+                    Theme.of(context).primaryColor.withOpacity(0.1),
                 child: Text(
                   post.userId.toString(),
                   style: TextStyle(
@@ -36,7 +38,6 @@ class PostCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12.0),
-              // Post Content (Matches Shimmer lines)
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,11 +53,8 @@ class PostCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4.0),
                     Text(
-                      "Post ID: ${post.id}",
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.grey[600],
-                      ),
+                      'User ${post.userId}',
+                      style: TextStyle(fontSize: 14.0, color: Colors.grey[600]),
                     ),
                   ],
                 ),
