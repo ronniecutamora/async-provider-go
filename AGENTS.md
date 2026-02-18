@@ -1,57 +1,63 @@
 # Project [async_provider_go]
 
 ## Project Overview
-A simple Flutter application implementing async programming, provider state management and go_router.
-- **State Management:** Provider (Lite Clean Architecture, feature-first approach)
-- **Backend:** No backend yet, we fake data via features/posts/data/data_sources/xxxx.service.dart for now
+A production-ready Flutter application implementing asynchronous programming, Provider state management, and GoRouter.
+- **State Management:** Provider (Clean Architecture, Feature-First approach).
+- **Backend:** Mock Data Services (Ready for Supabase/REST integration).
 
 ## Core Technology Stack
 - **Flutter SDK:** ^3.11.0
-- **State Management:** provider: ^6.1.5+1
-- **Routing System:** go_router: ^17.1.0
-- **Loading Indicators:** shimmer: ^3.0.0
-- **Backend:** No backend yet, we fake data via features/posts/data/data_sources/xxxx.service.dart for now
-- **UI Components:** Material Design 3
-
-## Database Schema
-  No need for now
+- **State Management:** `provider`
+- **Routing:** `go_router` (StatefulShellRoute for persistent nav)
+- **UI & UX:** Material Design 3 & `shimmer` for skeleton loaders
 
 # Architecture & Project Structure
 
-This project follows a **Feature-First Clean Architecture**. Code is grouped by feature (e.g., `posts`, `auth`) rather than by technical layer. Inside each feature, the code is strictly divided into three distinct layers: **Domain**, **Data**, and **Presentation**.
+This project follows a **Feature-First Clean Architecture**. Code is grouped by feature (e.g., `posts`, `auth`) rather than by technical layer. Each feature is divided into three layers:
 
-## 1. Domain Layer (`domain/`)
-The core, independent business logic of the feature. It does not know about the UI, the database, or the network.
-* **Models (`domain/models/`)**: Pure Dart classes representing the core business entities (e.g., `Post`). 
-* **Repositories - Interfaces (`domain/repositories/`)**: Abstract classes (contracts) defining *what* data operations are possible, without implementing *how* they are done.
 
-## 2. Data Layer (`data/`)
-Responsible for fetching, sending, and caching data. It implements the contracts defined by the Domain layer.
-* **Data Sources / Services (`data/data_sources/`)**: Direct communicators with the outside world (e.g., HTTP clients, Supabase, local SQLite). They perform the raw data fetching.
-* **Repositories - Implementations (`data/repositories/`)**: Concrete classes that implement the Domain layer's repository interface. They take raw data from the data sources and map it into Domain Models.
 
-## 3. Presentation Layer (`presentation/`)
-Responsible for everything the user sees and interacts with. It only depends on the Domain layer (interfaces and models) and is completely decoupled from the Data layer.
-* **Providers (`presentation/providers/`)**: State managers (usually `ChangeNotifier` classes) that hold the UI state (e.g., `PostInitial`, `PostLoading`) and interact with the Domain Repositories to handle user input.
-* **Screens (`presentation/screens/`)**: Full-page Widgets. These are strictly **passive**; they listen to Providers and render the UI accordingly, containing zero business logic.
-* **Widgets (`presentation/widgets/`)**: Reusable, smaller UI components specific to this feature (e.g., `post_card.widget.dart`, `post_shimmer.widget.dart`).
+### 1. Domain Layer (`domain/`)
+The "Source of Truth." Contains business logic, entities, and repository interfaces. **No Flutter dependencies here.**
 
-## Full Directory Structure
+### 2. Data Layer (`data/`)
+The "Infrastructure." Implements repository interfaces and handles raw data fetching from services/APIs.
 
-lib
+### 3. Presentation Layer (`presentation/`)
+The "UI." Contains Providers (View Models), Screens, and Widgets. This layer only knows about the **Domain**.
+
+
+
+## Directory Structure
+
+```text
+lib/
+├── core/                  # Global configs (theme, router, constants)
+├── features/
+│   └── posts/
+│       ├── data/          # Services & Repository Impls
+│       ├── domain/        # Models & Repository Interfaces
+│       └── presentation/  # Providers, Screens & Widgets
+└── main.dart              # Dependency Injection & App Entry
+```
+
+## Example Directory Structure
+```text
+lib/
+├── core/                   # Global configs (theme, router, constants)
 ├── features
 │   └── posts
-│       ├── data
+│       ├── data            # Services & Repository Impls
 │       │   ├── data_sources
 │       │   │   └── post.service.dart
 │       │   └── repositories
 │       │       └── post.repository.dart
-│       ├── domain
+│       ├── domain          # Models & Repository Interfaces
 │       │   ├── models
 │       │   │   └── post.model.dart
 │       │   └── repositories
 │       │       └── post.repository.dart
-│       └── presentation
+│       └── presentation    # Providers, Screens & Widgets
 │           ├── providers
 │           │   └── post.provider.dart
 │           ├── screens
@@ -59,18 +65,57 @@ lib
 │           └── widgets
 │               ├── post_card.widget.dart
 │               └── post_shimmer.widget.dart
-└── main.dart
-## Coding Guidelines
-- **MVVM Pattern**: Always separate logic from UI. Widgets should only use `Consumer` or `context.watch/read` to interact with View Models.
-- **Documentation**: Always add DartDocs (`///`) to public classes and methods.
-- **Styling**: Use `const` constructors wherever possible. Use Material Icons.
-- **Error Handling**: Catch errors in the View Model and expose them via an error state string or object; do not let exceptions crash the UI.
+└── main.dart               # Dependency Injection & App Entry
+```
 
-## Important Commands
-- **Run App**: `flutter run`
-- **Fix Lint Issues**: `dart fix --apply`
-- **Run Tests**: `flutter test`
-- **Build Runner (if applicable)**: `dart run build_runner build --delete-conflicting-outputs`
+## Coding Guidelines
+- **Logic Separation**: Screens must be passive. All logic stays in the `Provider`.
+- **State Handling**: Use **Sealed Classes** and **Switch Expressions** for UI states (Initial, Loading, Loaded, Error).
+
+## Example State Handling
+
+```dart
+    @override
+    Widget build(BuildContext context) {
+    final state = context.watch<PostProvider>().state;
+
+    return Scaffold(
+      appBar: AppBar(title: const Text("My Blog")),
+      body: RefreshIndicator(
+        onRefresh: () => context.read<PostProvider>().loadPosts(),
+        child: switch (state) {
+          PostInitial() => ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  child: const Center(child: Text("Pull down to load posts")),
+                ),
+              ],
+            ),
+          PostLoading() => const PostShimmerList(), 
+          PostError(message: var m) => ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  child: Center(child: Text(m)),
+                ),
+              ],
+            ),
+          PostLoaded(posts: var list) => ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(), 
+              itemCount: list.length,
+              itemBuilder: (context, index) => PostCard(post: list[index]),
+            ),
+        },
+      ),
+    );
+  }
+```
+- **Immutability**: Use `const` constructors wherever possible.
+- **Error Handling**: Use `try/catch` in the Repository implementation; the Provider should convert these into UI-friendly states.
 
 ## Maintenance Rules
-- **Evolution**: If we decide on a new coding pattern or add a new library, immediately update everything in this markdown `agents.md`.
+- **Documentation**: Use `///` (DartDocs) for public-facing logic.
+- **Project Blueprint**: Update this file (`README.md`) immediately when adding new global libraries or changing architectural patterns.
