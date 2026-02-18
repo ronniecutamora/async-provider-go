@@ -90,6 +90,13 @@ lib/
   - Each feature must provide its own dedicated shimmer widget (e.g., `PostShimmerList`, `CommentShimmerList`).  
   - Shimmer widgets must visually match the final loaded layout to reduce layout shift and improve perceived performance.
 
+- **Button Loading States (CircularProgressIndicator Required)**:  
+  Use `CircularProgressIndicator` for loading states inside all buttons across the entire project (e.g., submit, login, delete, save actions).  
+  - Replace the button label with a properly sized `CircularProgressIndicator` when the action is in progress.  
+  - Disable the button while loading to prevent duplicate submissions.  
+  - Ensure consistent sizing and padding across all button loaders.  
+  - Do not use shimmer effects for button-level loading interactions.
+
 
 ## Example State Handling
 
