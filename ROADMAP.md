@@ -50,7 +50,7 @@ milestone.
 - [x] `loadPost(int id)` method added to `PostProvider`
 - [x] `PostCard.onTap` navigates via `context.goNamed` with `pathParameters`
 - [x] `PostDetailScreen` — `StatefulWidget`, fetches on `initState`, full
-      `switch` expression covering all 4 detail states, retry button on error
+- [x] `switch` expression covering all 4 detail states, retry button on error
 
 ---
 
