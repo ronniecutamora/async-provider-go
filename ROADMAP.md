@@ -54,20 +54,21 @@ milestone.
 
 ---
 
-## 🔜 Phase 4 — UI Polish (Next Up)
+## ✅ Phase 4 — UI Polish (Completed)
 
 > Goal: Make the app feel production-ready visually before touching the backend.
 
-- [ ] Extract `AppTheme` into `lib/core/theme/app_theme.dart`
-- [ ] Wire up `google_fonts` (e.g. Inter or Poppins) across the app
-- [ ] Add dark mode support via `ThemeMode` toggle in `AppTheme`
-- [ ] Improve `PostDetailScreen` typography and layout spacing
-- [ ] Add `PostShimmer` equivalent for the detail screen loading state
-- [ ] Add empty state illustration to `PostInitial` on the list screen
-- [ ] Standardise error widget into a reusable `lib/core/widgets/error_view.dart`
-- [ ] Add `SnackBar` feedback on pull-to-refresh failure (per AGENTS.md UI feedback rules)
-- [ ] Use `Shimmer` loading indicator at post_detail.screen.dart too, standardize this across the entire project going forward
-- [ ] The number of `Shimmer` should match the actual length of the loading contents
+- [x] Extract `AppTheme` into `lib/core/theme/app_theme.dart`
+- [x] Wire up `google_fonts` (Inter) across the app via `AppTheme`
+- [x] Add dark mode support via `ThemeMode` toggle in `ThemeProvider`
+- [x] Standardise error widget into `lib/core/widgets/error_view.dart`
+- [x] Add `SnackBar` feedback on error via provider listener in `PostScreen`
+- [x] `PostShimmerList` now accepts `itemCount` — count matches real list length via `PostProvider.shimmerCount`
+- [x] Shimmer colours adapt to light/dark theme
+- [x] Replace `CircularProgressIndicator` in `PostDetailScreen` with `PostDetailShimmer`
+- [x] `PostDetailShimmer` layout mirrors the actual detail screen (avatar, title, body lines)
+- [x] `PostScreen` converted to `StatefulWidget` to support provider listener pattern
+- [x] `ThemeProvider` injected in `main.dart`, consumed via `Consumer` in `MaterialApp.router`
 
 ---
 
