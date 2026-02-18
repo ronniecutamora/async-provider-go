@@ -123,3 +123,58 @@ lib/
   - Add a new Phase block at the bottom if an entirely new area of work is introduced.
   - Log any significant architectural decisions in the **Decisions & Notes** table with the current date.
   - Never delete completed phases — they serve as a changelog.
+
+### Version Control Standards
+
+- **Commit Convention Required**: All commits must follow the Conventional Commits format:
+
+
+**Allowed Types**
+- `feat`     → New feature
+- `fix`      → Bug fix
+- `refactor` → Code restructuring (no behavior change)
+- `docs`     → Documentation changes
+- `style`    → Formatting, linting, UI polish (no logic changes)
+- `test`     → Adding or updating tests
+- `chore`    → Maintenance tasks (dependencies, configs, cleanup)
+
+**Examples**
+- feat(posts): implement PostProvider with sealed states
+- fix(router): correct nested route redirect logic
+- docs(agents): update shimmer loading rule
+- refactor(posts): extract dto to domain mapper
+- style(ui): improve post card spacing
+
+
+
+- **Commit Granularity Rule**:
+- Commit changes one logical unit at a time.
+- Do not bundle unrelated changes in a single commit.
+- Separate documentation updates from feature implementation commits.
+
+- **AI Workflow Rule**:
+After generating or modifying code, always provide:
+1. The correct commit message.
+2. The exact Git commands to run.
+3. Commands must be given step-by-step (no combined mega-commands unless explicitly requested).
+
+**Example**
+- git add lib/features/posts/presentation/providers/post.provider.dart
+- git commit -m "feat(posts): add PostProvider with sealed state handling"
+
+If multiple logical changes were made, provide them as separate commits:
+
+- git add lib/features/posts/presentation/widgets/post_shimmer.widget.dart
+- git commit -m "feat(posts): add PostShimmerList skeleton loader"
+
+- git add AGENTS.md
+- git commit -m "docs(agents): enforce shimmer loading rule"
+
+- **Branching (Recommended)**:
+- Use feature branches:
+  ```
+  feature/posts-comments
+  fix/router-redirect
+  refactor/provider-cleanup
+  ```
+- Merge only after analysis and tests pass.
