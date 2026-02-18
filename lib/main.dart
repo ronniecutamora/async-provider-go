@@ -1,6 +1,6 @@
 import 'package:async_provider_go/core/router/app_router.dart';
 import 'package:async_provider_go/features/posts/data/data_sources/post.service.dart';
-import 'package:async_provider_go/features/posts/data/repositories/post.repository.dart';
+import 'package:async_provider_go/features/posts/data/repositories/post.repository_impl.dart';
 import 'package:async_provider_go/features/posts/domain/repositories/post.repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
