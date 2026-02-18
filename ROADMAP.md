@@ -93,7 +93,7 @@ milestone.
 
 - [ ] Add `AppConstants` flag — `static const bool useMockData = true`
 - [ ] Conditionally inject mock vs real service in `main.dart`
-- [ ] Integrate Supabase client (or REST via `http` / `dio`)
+- [ ] Integrate Supabase client
 - [ ] Replace `PostService` mock implementations with real API calls
 - [ ] Add `Post.fromJson()` factory for JSON deserialization
 - [ ] Add `Post.toJson()` for write operations
