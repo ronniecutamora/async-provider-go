@@ -12,7 +12,7 @@ class PostScreen extends StatelessWidget {
     final state = context.watch<PostProvider>().state;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("My Blog")),
+      appBar: AppBar(title: const Text("Blog")),
       body: RefreshIndicator(
         onRefresh: () => context.read<PostProvider>().loadPosts(),
         child: switch (state) {
