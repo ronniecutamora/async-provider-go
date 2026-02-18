@@ -1,6 +1,6 @@
 
 import 'package:async_provider_go/features/posts/domain/models/post.model.dart';
-
+//fake post service
 class PostService {
   Future<List<Post>> fetchPosts() async {
     await Future.delayed(const Duration(seconds: 1));
