@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'features/posts/presentation/providers/post.provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized(); // add this
   runApp(const MyApp());
 }
 
