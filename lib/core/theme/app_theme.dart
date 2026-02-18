@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 /// Central theme configuration for the app.
 ///
 /// Usage in [MaterialApp.router]:
@@ -27,7 +28,7 @@ abstract final class AppTheme {
         color: const Color(0xFF111827),
       ),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -53,7 +54,7 @@ abstract final class AppTheme {
         color: const Color(0xFFF9FAFB),
       ),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
