@@ -116,4 +116,10 @@ lib/
 
 ## Maintenance Rules
 - **Documentation**: Use `///` (DartDocs) for public-facing logic.
-- **Project Blueprint**: Update this file (`README.md`) immediately when adding new global libraries or changing architectural patterns.
+- **Project Blueprint**: Update `AGENTS.md` immediately when adding new global libraries or changing architectural patterns.
+- **Roadmap Sync**: Update `ROADMAP.md` after every completed task or session:
+  - Toggle `[ ]` to `[x]` for anything just completed.
+  - Add new tasks under the appropriate phase if scope expands.
+  - Add a new Phase block at the bottom if an entirely new area of work is introduced.
+  - Log any significant architectural decisions in the **Decisions & Notes** table with the current date.
+  - Never delete completed phases — they serve as a changelog.
