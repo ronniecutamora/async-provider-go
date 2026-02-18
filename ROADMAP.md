@@ -77,11 +77,11 @@ milestone.
 > Goal: Initialise the Supabase client and wire environment config so every
 > feature that follows can talk to a real backend.
 
-- [ ] Add `supabase_flutter` to `pubspec.yaml`
-- [ ] Create `lib/core/constants/app_constants.dart` — store Supabase URL & anon key via `--dart-define`
-- [ ] Initialise `Supabase.initialize()` in `main.dart` before `runApp`
-- [ ] Expose `Supabase.instance.client` via a `Provider` in `main.dart` so all features can inject it
-- [ ] Add `.env.example` and document `--dart-define` setup in README
+- [x] Add `supabase_flutter` to `pubspec.yaml`
+- [x] Create `lib/core/constants/app_constants.dart` — store Supabase URL & anon key via `--dart-define`
+- [x] Initialise `Supabase.initialize()` in `main.dart` before `runApp`
+- [x] Expose `Supabase.instance.client` via a `Provider` in `main.dart` so all features can inject it
+- [x] Add `.env.example` and document `--dart-define` setup in README
 
 ---
 
