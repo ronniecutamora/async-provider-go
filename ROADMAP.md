@@ -66,6 +66,8 @@ milestone.
 - [ ] Add empty state illustration to `PostInitial` on the list screen
 - [ ] Standardise error widget into a reusable `lib/core/widgets/error_view.dart`
 - [ ] Add `SnackBar` feedback on pull-to-refresh failure (per AGENTS.md UI feedback rules)
+- [ ] Use `Shimmer` loading indicator at post_detail.screen.dart too, standardize this across the entire project going forward
+- [ ] The number of `Shimmer` should match the actual length of the loading contents
 
 ---
 
