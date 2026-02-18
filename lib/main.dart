@@ -1,4 +1,6 @@
 import 'package:async_provider_go/core/router/app_router.dart';
+import 'package:async_provider_go/core/theme/app_theme.dart';
+import 'package:async_provider_go/core/theme/theme.provider.dart';
 import 'package:async_provider_go/features/posts/data/data_sources/post.service.dart';
 import 'package:async_provider_go/features/posts/data/repositories/post.repository_impl.dart';
 import 'package:async_provider_go/features/posts/domain/repositories/post.repository.dart';
@@ -18,6 +20,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        // Theme
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+
         // 1. Data Source
         Provider(create: (_) => PostService()),
 
@@ -32,10 +37,14 @@ class MyApp extends StatelessWidget {
           update: (_, repo, previous) => previous ?? PostProvider(repo),
         ),
       ],
-      child: MaterialApp.router(
-        title: 'Production Pattern',
-        theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
-        routerConfig: appRouter,
+      child: Consumer<ThemeProvider>(
+        builder: (_, themeProvider, __) => MaterialApp.router(
+          title: 'Production Pattern',
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          themeMode: themeProvider.themeMode,
+          routerConfig: appRouter,
+        ),
       ),
     );
   }
