@@ -79,8 +79,17 @@ lib/
 ```
 
 ## Coding Guidelines
+
 - **Logic Separation**: Screens must be passive. All logic stays in the `Provider`.
-- **State Handling**: Use **Sealed Classes** and **Switch Expressions** for UI states (Initial, Loading, Loaded, Error). All UI screens must use a `switch` expression against the Provider's state. This ensures 100% of states (Initial, Loading, Error, Success) are handled.
+
+- **State Handling**: Use **Sealed Classes** and **Switch Expressions** for UI states (`Initial`, `Loading`, `Loaded`, `Error`). All UI screens must use a `switch` expression against the Provider's state. This ensures 100% of states are handled explicitly and prevents unhandled UI states.
+
+- **Loading UX (Shimmer Required)**:  
+  For asynchronous content such as posts, comments, feeds, lists, and detail views, use skeleton loaders built with `shimmer` during `Loading` states.  
+  - Do **not** use `CircularProgressIndicator` for list-based or content-heavy layouts.  
+  - Each feature must provide its own dedicated shimmer widget (e.g., `PostShimmerList`, `CommentShimmerList`).  
+  - Shimmer widgets must visually match the final loaded layout to reduce layout shift and improve perceived performance.
+
 
 ## Example State Handling
 
