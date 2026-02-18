@@ -1,3 +1,5 @@
+import 'package:async_provider_go/core/widgets/error_view.dart';
+import 'package:async_provider_go/features/posts/presentation/widgets/post_detail_shimmer.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -21,11 +23,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   @override
   void initState() {
     super.initState();
-    // Trigger fetch after the first frame so the Provider tree is ready.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<PostProvider>().loadPost(int.parse(widget.postId));
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _load());
   }
+
+  void _load() =>
+      context.read<PostProvider>().loadPost(int.parse(widget.postId));
 
   @override
   Widget build(BuildContext context) {
@@ -38,26 +40,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       ),
       body: switch (detailState) {
         PostDetailInitial() => const SizedBox.shrink(),
-        PostDetailLoading() => const Center(child: CircularProgressIndicator()),
-        PostDetailError(message: var m) => Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                  const SizedBox(height: 12),
-                  Text(m, textAlign: TextAlign.center),
-                  const SizedBox(height: 16),
-                  FilledButton(
-                    onPressed: () => context
-                        .read<PostProvider>()
-                        .loadPost(int.parse(widget.postId)),
-                    child: const Text('Retry'),
-                  ),
-                ],
-              ),
-            ),
+        PostDetailLoading() => const PostDetailShimmer(),
+        PostDetailError(message: var m) => ErrorView(
+            message: m,
+            onRetry: _load,
           ),
         PostDetailLoaded(post: var post) => SingleChildScrollView(
             padding: const EdgeInsets.all(24.0),
@@ -68,12 +54,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   children: [
                     CircleAvatar(
                       radius: 20,
-                      backgroundColor:
-                          Theme.of(context).primaryColor.withOpacity(0.1),
+                      backgroundColor: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.1),
                       child: Text(
                         post.userId.toString(),
                         style: TextStyle(
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
