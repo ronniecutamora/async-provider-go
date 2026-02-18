@@ -2,7 +2,7 @@ import 'package:async_provider_go/features/posts/domain/models/post.model.dart';
 import 'package:async_provider_go/features/posts/domain/repositories/post.repository.dart';
 import 'package:flutter/material.dart';
 
-// ── List states ─────────────────────────────────────────────────────────────
+// ── List states ──────────────────────────────────────────────────────────────
 sealed class PostState {}
 class PostInitial extends PostState {}
 class PostLoading extends PostState {}
@@ -40,11 +40,18 @@ class PostProvider extends ChangeNotifier {
   PostState _state = PostInitial();
   PostState get state => _state;
 
+  /// Tracks the last known post count so the shimmer list can render
+  /// the same number of skeletons as the real content.
+  /// Defaults to 5 on first load.
+  int _shimmerCount = 5;
+  int get shimmerCount => _shimmerCount;
+
   Future<void> loadPosts() async {
     _state = PostLoading();
     notifyListeners();
     try {
       final posts = await _repository.getPosts();
+      _shimmerCount = posts.length; // remember for next loading cycle
       _state = PostLoaded(posts);
     } catch (e) {
       _state = PostError(e.toString());
