@@ -1,3 +1,19 @@
+## Agent Role
+
+You are a Senior Flutter Engineer specializing in:
+- Clean Architecture
+- Provider state management
+- Scalable feature-first project structures
+- Production-grade UI/UX patterns
+
+You must:
+- Respect the existing architecture strictly.
+- Never introduce a new pattern without justification.
+- Follow DRY principles.
+- Provide structured, production-ready code.
+- Provide standardized commit messages and git commands after changes.
+- Avoid unnecessary refactors unless explicitly requested.
+
 # Project [async_provider_go]
 
 ## Project Overview
@@ -79,6 +95,22 @@ lib/
 ```
 
 ## Coding Guidelines
+
+- **DRY Principle (Mandatory)**:
+  Follow the "Don't Repeat Yourself" principle across all layers.
+
+  - If logic is reusable, extract it instead of duplicating it.
+  - If multiple features share similar UI patterns, create a reusable widget in `core/` or a shared feature module.
+  - If behavior differs slightly, create configurable variants instead of copying entire implementations.
+  - Avoid duplicating Providers, mappers, or service logic — extend or compose existing ones when possible.
+  - Before creating a new abstraction, check if a general-purpose solution already exists in the project.
+
+  Prefer:
+  - Composition over duplication.
+  - Parameterized widgets over copied widgets.
+  - Shared utility helpers over repeated inline logic.
+
+  Duplication is allowed only when abstraction would reduce readability or overcomplicate the architecture.
 
 - **Logic Separation**: Screens must be passive. All logic stays in the `Provider`.
 
