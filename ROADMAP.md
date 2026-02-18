@@ -50,7 +50,7 @@ milestone.
 - [x] `loadPost(int id)` method added to `PostProvider`
 - [x] `PostCard.onTap` navigates via `context.goNamed` with `pathParameters`
 - [x] `PostDetailScreen` — `StatefulWidget`, fetches on `initState`, full
-- [x] `switch` expression covering all 4 detail states, retry button on error
+      `switch` expression covering all 4 detail states, retry button on error
 
 ---
 
@@ -72,46 +72,68 @@ milestone.
 
 ---
 
-## 🔜 Phase 5 — Auth Feature
+## 🔜 Phase 5 — Supabase Setup (Next Up)
 
-> Goal: Add login/signup flow with route protection.
+> Goal: Initialise the Supabase client and wire environment config so every
+> feature that follows can talk to a real backend.
+
+- [ ] Add `supabase_flutter` to `pubspec.yaml`
+- [ ] Create `lib/core/constants/app_constants.dart` — store Supabase URL & anon key via `--dart-define`
+- [ ] Initialise `Supabase.initialize()` in `main.dart` before `runApp`
+- [ ] Expose `Supabase.instance.client` via a `Provider` in `main.dart` so all features can inject it
+- [ ] Add `.env.example` and document `--dart-define` setup in README
+
+---
+
+## 🔜 Phase 6 — Auth Feature
+
+> Goal: Full sign-up / login / logout flow backed by Supabase Auth, with
+> route protection and persistent session.
 
 - [ ] New feature folder: `lib/features/auth/`
+- [ ] `AppUser` domain model — wraps Supabase `User` without leaking the SDK into the domain
+- [ ] `AuthRepository` interface (domain contract)
+- [ ] `AuthRepositoryImpl` — calls `supabase.auth.signInWithPassword`, `signUp`, `signOut`
 - [ ] `AuthState` sealed class — `Initial | Loading | Authenticated | Unauthenticated | Error`
-- [ ] `AuthProvider` with `login()`, `logout()`, `checkSession()` methods
-- [ ] `LoginScreen` and `SignupScreen`
-- [ ] `GoRouter.redirect` guard — redirect unauthenticated users to `/login`
+- [ ] `AuthProvider` with `login()`, `signup()`, `logout()`, `checkSession()` methods
+- [ ] `LoginScreen` with email + password fields, shimmer-free (form is instant)
+- [ ] `SignupScreen` with email + password + confirm fields
+- [ ] `GoRouter.redirect` guard — unauthenticated users redirected to `/login`
+- [ ] Listen to `supabase.auth.onAuthStateChange` stream in `AuthProvider`
+- [ ] `flutter_secure_storage` for session token persistence
 - [ ] New `StatefulShellBranch` in `app_router.dart` for Profile tab
 - [ ] Uncomment Profile `NavigationDestination` in `ShellScaffold`
-- [ ] `flutter_secure_storage` for token persistence
+- [ ] `ProfileScreen` — shows logged-in user info and a logout button with `showDialog` confirmation
 
 ---
 
-## 🔜 Phase 6 — Backend Integration
+## 🔜 Phase 7 — Migrate Posts to Supabase
 
-> Goal: Swap mock services for a real backend with zero changes above the data layer.
+> Goal: Replace the mock `PostService` with real Supabase database calls.
+> Nothing above the data layer changes.
 
-- [ ] Add `AppConstants` flag — `static const bool useMockData = true`
-- [ ] Conditionally inject mock vs real service in `main.dart`
-- [ ] Integrate Supabase client
-- [ ] Replace `PostService` mock implementations with real API calls
-- [ ] Add `Post.fromJson()` factory for JSON deserialization
-- [ ] Add `Post.toJson()` for write operations
+- [ ] Create `posts` table in Supabase (id, title, body, user_id, created_at)
+- [ ] Add `Post.fromJson()` factory for Supabase row deserialization
+- [ ] Replace `PostService` mock with real `supabase.from('posts').select()` calls
+- [ ] Replace `fetchPostById()` mock with `.eq('id', id)` query
+- [ ] Pass `SupabaseClient` into `PostService` via DI in `main.dart`
+- [ ] Add Row Level Security (RLS) policies — users can only read published posts
 - [ ] Add local caching layer in `PostRepositoryImpl` (optional)
-- [ ] Environment config — `.env` or `--dart-define` for API keys
 
 ---
 
-## 🔜 Phase 7 — Testing
+## 🔜 Phase 8 — Testing
 
 > Goal: Confidence to refactor and ship without regressions.
 
+- [ ] Unit tests for `AuthProvider` — assert state transitions
 - [ ] Unit tests for `PostProvider` — assert state transitions
 - [ ] Unit tests for `PostRepositoryImpl` — mock the service
 - [ ] Widget tests for `PostScreen` — test all 4 state renders
 - [ ] Widget tests for `PostDetailScreen` — test all 4 detail states
+- [ ] Widget tests for `LoginScreen` — form validation and error state
 - [ ] Golden tests for `PostCard` and shimmer widgets
-- [ ] Integration test for the list → detail navigation flow
+- [ ] Integration test for login → list → detail navigation flow
 
 ---
 
@@ -122,3 +144,5 @@ milestone.
 | Phase 2 | `NavigationBar` requires ≥ 2 destinations — guarded with `showNav` bool in `ShellScaffold` |
 | Phase 3 | Detail state kept inside `PostProvider` (not a separate provider) — one `ProxyProvider` covers the whole feature |
 | Phase 3 | Backend strategy agreed: keep mock `PostService` for UI dev, swap only the service when backend is ready — nothing above the data layer changes |
+| Phase 5 | Supabase client exposed as a `Provider<SupabaseClient>` in `main.dart` so auth and posts features both inject it cleanly without a service locator |
+| Phase 6 | `AppUser` domain model wraps Supabase `User` — keeps the SDK out of the domain and presentation layers |
