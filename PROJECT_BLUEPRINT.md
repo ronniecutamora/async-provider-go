@@ -106,7 +106,6 @@ git commit -m "feat(<feature>): add domain models and repository interface"
 ```
 data/
  ├── data_sources/
- ├── mappers/          ← optional: raw exception → user-friendly message mappers
  └── repositories/
 ```
 
@@ -115,15 +114,11 @@ data/
 - Data layer depends on Domain (never the opposite)
 - No UI logic
 - No DTOs or separate mappers — models handle their own JSON deserialization
-- Exception mappers live in `data/mappers/` — they translate raw SDK or HTTP exceptions into clean user-facing strings, used exclusively by the repository implementation
-- Mappers must be `abstract final` classes with only `static` methods — no instances needed
 
 **Checklist:**
 - [ ] Service implemented
 - [ ] Repository implementation added
 - [ ] JSON parsed via `Model.fromJson()` inside the service
-- [ ] Exception mapper added to `data/mappers/` (if feature has user-facing errors)
-- [ ] All `catch` blocks in repository use `AppException(ErrorMapper.map(e))` — never raw `Exception(message)` or `Exception('Failed: $e')`
 - [ ] Repository tested
 
 **Commit:**
@@ -320,6 +315,45 @@ git commit -m "style: format code and resolve lints"
 
 ---
 
+## 11. GoRouter Redirect Rules
+
+**Location:** `lib/core/router/app_router.dart`
+
+When using `refreshListenable` with an `AuthProvider`, the redirect guard **must distinguish the user's current route context** before deciding whether to wait or redirect.
+
+### The Problem
+
+A blanket `if (isLoading) return null` crashes the app during logout when the user is inside a `StatefulShellRoute`. GoRouter fires the redirect on every `notifyListeners()`. When logout begins:
+
+1. `AuthLoading` → redirect returns `null` → user stays on the shell ✅
+2. `AuthUnauthenticated` → redirect returns `/login` → GoRouter tries to pop the shell's last page before navigating → **crash**:
+   ```
+   _AssertionError: 'currentConfiguration.isNotEmpty':
+   You have popped the last page off of the stack, there are no pages left to show
+   ```
+
+### The Fix — Split the loading guard by route context
+
+```dart
+// ✅ Correct
+if (isInitial) return null;
+if (isLoading) return isOnAuthRoute ? null : AppRoutes.login;
+
+// ❌ Never do this — causes StatefulShellRoute pop crash on logout
+if (isInitial || isLoading) return null;
+```
+
+| State | On auth route (`/login`, `/signup`) | On protected shell route |
+|---|---|---|
+| `AuthInitial` | `null` — wait | `null` — wait |
+| `AuthLoading` | `null` — login/signup in progress | `/login` — logout in progress, redirect immediately |
+| `AuthUnauthenticated` | `null` — already here | `/login` |
+| `AuthAuthenticated` | `/posts` — go home | `null` |
+
+**Rule:** `isInitial` is the only state that unconditionally waits. `isLoading` always depends on where the user currently is.
+
+---
+
 ## 🚫 Architecture Guardrails
 
 **Never:**
@@ -330,7 +364,6 @@ git commit -m "style: format code and resolve lints"
 - Break sealed state pattern
 - Skip switch expressions for UI state rendering
 - Create separate DTOs or mapper classes — use `Model.fromJson()` instead
-- Throw raw `Exception(message)` from repositories — always use `AppException` from `lib/core/exceptions/app_exception.dart` so `e.toString()` in the provider never leaks a `"Exception:"` prefix into the UI
 
 ---
 
