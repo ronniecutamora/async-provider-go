@@ -106,6 +106,7 @@ git commit -m "feat(<feature>): add domain models and repository interface"
 ```
 data/
  ├── data_sources/
+ ├── mappers/          ← optional: raw exception → user-friendly message mappers
  └── repositories/
 ```
 
@@ -114,11 +115,15 @@ data/
 - Data layer depends on Domain (never the opposite)
 - No UI logic
 - No DTOs or separate mappers — models handle their own JSON deserialization
+- Exception mappers live in `data/mappers/` — they translate raw SDK or HTTP exceptions into clean user-facing strings, used exclusively by the repository implementation
+- Mappers must be `abstract final` classes with only `static` methods — no instances needed
 
 **Checklist:**
 - [ ] Service implemented
 - [ ] Repository implementation added
 - [ ] JSON parsed via `Model.fromJson()` inside the service
+- [ ] Exception mapper added to `data/mappers/` (if feature has user-facing errors)
+- [ ] All `catch` blocks in repository use `AppException(ErrorMapper.map(e))` — never raw `Exception(message)` or `Exception('Failed: $e')`
 - [ ] Repository tested
 
 **Commit:**
@@ -325,6 +330,7 @@ git commit -m "style: format code and resolve lints"
 - Break sealed state pattern
 - Skip switch expressions for UI state rendering
 - Create separate DTOs or mapper classes — use `Model.fromJson()` instead
+- Throw raw `Exception(message)` from repositories — always use `AppException` from `lib/core/exceptions/app_exception.dart` so `e.toString()` in the provider never leaks a `"Exception:"` prefix into the UI
 
 ---
 
