@@ -1,4 +1,6 @@
+import 'package:async_provider_go/core/exceptions/app.exception.dart';
 import 'package:async_provider_go/features/auth/data/data_sources/auth.service.dart';
+import 'package:async_provider_go/features/auth/data/mappers/auth_error.mapper.dart';
 import 'package:async_provider_go/features/auth/domain/models/app_user.model.dart';
 import 'package:async_provider_go/features/auth/domain/repositories/auth.repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -26,10 +28,10 @@ class AuthRepositoryImpl implements AuthRepository {
       final response =
           await _service.signIn(email: email, password: password);
       final user = response.user;
-      if (user == null) throw Exception('No user returned from login.');
+      if (user == null) throw AppException('No user returned from login.');
       return _toAppUser(user);
     } catch (e) {
-      throw Exception('Login failed: $e');
+      throw AppException(AuthErrorMapper.map(e));
     }
   }
 
@@ -42,10 +44,10 @@ class AuthRepositoryImpl implements AuthRepository {
       final response =
           await _service.signUp(email: email, password: password);
       final user = response.user;
-      if (user == null) throw Exception('No user returned from sign up.');
+      if (user == null) throw AppException('No user returned from sign up.');
       return _toAppUser(user);
     } catch (e) {
-      throw Exception('Sign up failed: $e');
+      throw AppException(AuthErrorMapper.map(e));
     }
   }
 
@@ -54,7 +56,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await _service.signOut();
     } catch (e) {
-      throw Exception('Logout failed: $e');
+      throw AppException(AuthErrorMapper.map(e));
     }
   }
 
