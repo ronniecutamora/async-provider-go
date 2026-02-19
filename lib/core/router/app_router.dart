@@ -29,8 +29,14 @@ GoRouter buildAppRouter(AuthProvider authProvider) {
           state.matchedLocation == AppRoutes.login ||
           state.matchedLocation == AppRoutes.signup;
 
-      // Wait for session to resolve before redirecting.
-      if (isInitial || isLoading) return null;
+      // Wait for the initial session check to complete before doing anything.
+      if (isInitial) return null;
+
+      // Loading on an auth screen means login/signup is in progress — wait.
+      // Loading on a protected shell route means logout is in progress —
+      // redirect to login immediately so GoRouter doesn't try to pop the
+      // shell's last page, which triggers an AssertionError.
+      if (isLoading) return isOnAuthRoute ? null : AppRoutes.login;
 
       // Not authenticated and not already on an auth screen → login.
       if (!isAuthenticated && !isOnAuthRoute) return AppRoutes.login;
