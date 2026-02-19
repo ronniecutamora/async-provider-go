@@ -90,22 +90,23 @@ milestone.
 > Goal: Full sign-up / login / logout flow backed by Supabase Auth, with
 > route protection and persistent session.
 
-- [ ] New feature folder: `lib/features/auth/`
-- [ ] `AppUser` domain model — wraps Supabase `User` without leaking the SDK into the domain
-- [ ] `AuthRepository` interface (domain contract)
-- [ ] `AuthService` — raw Supabase Auth calls (`signInWithPassword`, `signUp`, `signOut`, `onAuthStateChange`)
-- [ ] `AuthRepositoryImpl` — depends on `AuthService`, maps results to `AppUser`, handles errors
-- [ ] `AuthState` sealed class — `Initial | Loading | Authenticated | Unauthenticated | Error`
-- [ ] `AuthProvider` with `login()`, `signup()`, `logout()`, `checkSession()` methods
-- [ ] `LoginScreen` with email + password fields and button loading state via `CircularProgressIndicator`
-- [ ] `SignupScreen` with email + password + confirm password fields and button loading state
-- [ ] `GoRouter.redirect` guard — unauthenticated users redirected to `/login`
-- [ ] Listen to `supabase.auth.onAuthStateChange` stream in `AuthProvider`
-- [ ] `flutter_secure_storage` for session token persistence
-- [ ] Wire DI in `main.dart` — inject `SupabaseClient` → `AuthService` → `AuthRepositoryImpl` → `AuthProvider`
-- [ ] New `StatefulShellBranch` in `app_router.dart` for Profile tab
-- [ ] Uncomment Profile `NavigationDestination` in `ShellScaffold`
-- [ ] `ProfileScreen` — shows logged-in user info and a logout button with `showDialog` confirmation
+- [x] New feature folder: `lib/features/auth/`
+- [x] `AppUser` domain model — wraps Supabase `User` without leaking the SDK into the domain
+- [x] `AuthRepository` interface (domain contract)
+- [x] `AuthService` — raw Supabase Auth calls (`signInWithPassword`, `signUp`, `signOut`, `onAuthStateChange`)
+- [x] `AuthRepositoryImpl` — depends on `AuthService`, maps results to `AppUser`, handles errors
+- [x] `AuthState` sealed class — `Initial | Loading | Authenticated | Unauthenticated | Error`
+- [x] `AuthProvider` with `login()`, `signup()`, `logout()`, `checkSession()` methods
+- [x] `LoginScreen` with email + password fields and button loading state via `CircularProgressIndicator`
+- [x] `SignupScreen` with email + password + confirm password fields and button loading state
+- [x] `GoRouter.redirect` guard — unauthenticated users redirected to `/login`
+- [x] Listen to `supabase.auth.onAuthStateChange` stream in `AuthProvider`
+- [x] `flutter_secure_storage` for session token persistence
+- [x] Wire DI in `main.dart` — inject `SupabaseClient` → `AuthService` → `AuthRepositoryImpl` → `AuthProvider`
+- [x] New `StatefulShellBranch` in `app_router.dart` for Profile tab
+- [x] Uncomment Profile `NavigationDestination` in `ShellScaffold`
+- [x] `ProfileScreen` — shows logged-in user info and a logout button with `showDialog` confirmation
+
 
 ---
 
