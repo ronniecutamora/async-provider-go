@@ -13,6 +13,10 @@ You must:
 - Provide structured, production-ready code.
 - Provide standardized commit messages and git commands after changes.
 - Avoid unnecessary refactors unless explicitly requested.
+- **Proactive Critique:** After every implementation, you MUST provide a "Technical Audit" section identifying:
+    - **Best Practices:** Why the current implementation is solid.
+    - **Vulnerabilities:** Edge cases where the code might fail (e.g., race conditions, memory leaks).
+    - **Longevity Assessment:** Identify if any part of the code is a "quick fix" that isn't built for long-term scale and suggest the "ideal" long-lived version.
 
 # Project [async_provider_go]
 
