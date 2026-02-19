@@ -18,6 +18,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  late final AuthProvider _authProvider; // save reference
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -25,19 +26,20 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<AuthProvider>().addListener(_onAuthStateChanged);
+    _authProvider = context.read<AuthProvider>();
+    _authProvider.addListener(_onAuthStateChanged);
   }
 
   @override
   void dispose() {
-    context.read<AuthProvider>().removeListener(_onAuthStateChanged);
+    _authProvider.removeListener(_onAuthStateChanged);
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
-  void _onAuthStateChanged() {
-    final state = context.read<AuthProvider>().state;
+ void _onAuthStateChanged() {
+    final state = _authProvider.state; 
     if (state is AuthError) {
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
@@ -53,10 +55,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    context.read<AuthProvider>().login(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-        );
+    _authProvider.login(
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+    );
   }
 
   @override
@@ -67,77 +69,79 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Welcome back',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Sign in to continue',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Colors.grey[600]),
-                ),
-                const SizedBox(height: 32),
-                TextFormField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Welcome back',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  keyboardType: TextInputType.emailAddress,
-                  enabled: !isLoading,
-                  validator: (v) =>
-                      v == null || v.isEmpty ? 'Email is required' : null,
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _passwordController,
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                    border: OutlineInputBorder(),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Sign in to continue',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: Colors.grey[600]),
                   ),
-                  obscureText: true,
-                  enabled: !isLoading,
-                  validator: (v) =>
-                      v == null || v.isEmpty ? 'Password is required' : null,
-                ),
-                const SizedBox(height: 24),
-                FilledButton(
-                  onPressed: isLoading ? null : _submit,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : const Text('Login'),
+                  const SizedBox(height: 32),
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    enabled: !isLoading,
+                    validator: (v) =>
+                        v == null || v.isEmpty ? 'Email is required' : null,
                   ),
-                ),
-                const SizedBox(height: 16),
-                TextButton(
-                  onPressed:
-                      isLoading ? null : () => context.go(AppRoutes.signup),
-                  child: const Text("Don't have an account? Sign up"),
-                ),
-              ],
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _passwordController,
+                    decoration: const InputDecoration(
+                      labelText: 'Password',
+                      border: OutlineInputBorder(),
+                    ),
+                    obscureText: true,
+                    enabled: !isLoading,
+                    validator: (v) =>
+                        v == null || v.isEmpty ? 'Password is required' : null,
+                  ),
+                  const SizedBox(height: 24),
+                  FilledButton(
+                    onPressed: isLoading ? null : _submit,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text('Login'),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextButton(
+                    onPressed:
+                        isLoading ? null : () => context.go(AppRoutes.signup),
+                    child: const Text("Don't have an account? Sign up"),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
