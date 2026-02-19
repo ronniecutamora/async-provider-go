@@ -14,16 +14,18 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
+  late final PostProvider _postProvider; // save reference
+
   @override
   void initState() {
     super.initState();
-    // Show SnackBar whenever state transitions to PostError.
-    context.read<PostProvider>().addListener(_onStateChanged);
+    _postProvider = context.read<PostProvider>();
+    _postProvider.addListener(_onStateChanged);
   }
 
   @override
   void dispose() {
-    context.read<PostProvider>().removeListener(_onStateChanged);
+    _postProvider.removeListener(_onStateChanged); // use saved reference
     super.dispose();
   }
 
