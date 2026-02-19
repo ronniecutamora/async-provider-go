@@ -13,16 +13,10 @@ import 'features/posts/presentation/providers/post.provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Validate compile-time env vars before anything else runs.
-  AppConstants.validate();
-
-  // Initialise Supabase — must complete before runApp.
   await Supabase.initialize(
     url: AppConstants.supabaseUrl,
     anonKey: AppConstants.supabaseAnonKey,
   );
-
   runApp(const MyApp());
 }
 
